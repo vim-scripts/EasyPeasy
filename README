@@ -1,0 +1,90 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=3710
+
+EasyPeasy parses the source code for included system headers and Generates
+an .lvimrc (or whatever you set g:lvimrc_filename) with 'tags' variable concatinations.
+I wrote it for the reason that having full system tags is totally unpleasant experience
+because of performance and existing garbage tags unused by the project. This script allows me
+to have just exactly what is used by the source code, which makes omnicompletion fast and accurate.
+
+ 	Example of generated .lvimrc:
+		set tags+=~/.vim/tags/getopt.tags
+		set tags+=~/.vim/tags/locale.tags
+		set tags+=~/.vim/tags/stdio.tags
+		set tags+=~/.vim/tags/unistd.tags
+		set tags+=~/.vim/tags/signal.tags
+		set tags+=~/.vim/tags/xcb.tags
+
+
+USAGE:
+
+To do the magic, use :EasyPeasy command from project top folder. This is the only command this script
+has. 
+
+
+CONFIGURATION:
+
+NOTE: The provided values are the default ones
+
+The directory where the script will look ctags generated tag files:
+	let g:tag_directory = "~/.vim/tags/"                     
+
+The extension of tag file:
+	let g:tag_extension = ".tags"                            
+
+Local vimrc file name:
+	let g:lvimrc_filename = ".lvimrc"                      
+
+Paths to the dir of system library headers in case tags file not found
+	let g:include_paths = "/usr/include/,/usr/local/include/"
+
+This variable can be changed while performing the scan by answering the prompts [Y] - Yes to all | [N] - No to all
+0 = show prompts on tags file creation
+1 = generate the tags file without prompt (sames as answering 'Y' to the prompt)
+2 = don't generate tag files - use the ones which exist under ~/.vim/tags only
+	let g:prompt_create_tags = 0
+
+
+DETAILS:
+
+This is how the script works:
+It parses the files recursively starting from cwd and gets all included
+files (skips local includes). It will use the first word as library name.
+
+Example:
+
+	1.	#include <mylib.h>
+
+	Using the statement above, it will try to find mylib.tags file under
+	tags directory. If not found, it will check if /usr/include/mylib.h
+	header exists. If so, it will prompt you if you want to generate
+	~/.vim/ctags/mylib.tags file using this header. If no, it will skip it.
+	If yes, it will genearte the tags and include into .lvimrc
+
+	2.	#include <anotherlib/mylib.h>
+
+	In this case it will use the folder name as library name. So it will
+	check if ~/.vim/tags/anotherlib.tags exist. If no, it will check if
+	/usr/include/anotherlib folder exist. If so, it will ask for confirmation
+        to generate the tags of whole folder headers. The rest is the
+	same as in the first example.
+
+	3.	In case no tags and no headers found
+
+	In this case you'll get prompted to enter the path to the header or
+	folder to use to generate the tags. Empty input will result in
+	skipping this library.
+	NOTE: This sometimes can happen in example on #include <dbus/dbus.h>
+	when the actual headers path is /usr/include/dbus-1.0/dbus/dbus.h
+
+
+CHANGELOG:
+
+0.1:
+  - First release.
+
+
+SHORT TEASER:
+http://www.megaupload.com/?d=33X4UJTT
+OR SCREENSHOT:
+http://img607.imageshack.us/img607/4401/tutorn.png
+
