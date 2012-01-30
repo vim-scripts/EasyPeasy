@@ -67,9 +67,9 @@
 "	1.	#include <mylib.h>
 "
 "		Using the statement above, it will try to find mylib.tags file under
-"		tags directory. If not found, it will check if /usr/include/mylib.h
+"		tags directory (~/.vim/tags). If not found, it will check if /usr/include/mylib.h
 "		header exists. If so, it will prompt you if you want to generate
-"		~/.vim/ctags/mylib.tags file using this header. If no, it will skip it.
+"		~/.vim/tags/mylib.tags file using this header. If no, it will skip it.
 "		If yes, it will genearte the tags and include into .lvimrc
 "
 "	2.	#include <anotherlib/mylib.h>
@@ -274,6 +274,7 @@ function! s:Generator.New(pattern)
 	let newGenerator.pattern = a:pattern
 	let newGenerator.lib_names = []
 	let newGenerator.lib_tags = []
+	let newGenerator.ignore_tags = [] " this is where 'N' answers go to ignore same questions
 	return newGenerator
 endfunction
 
@@ -285,8 +286,8 @@ function! s:Generator.parse(line)
 	let s:include = substitute(a:line, self.pattern, '\1', "")
 	" and the actual lib name only
 	let s:lib = substitute(s:include, '^\(\w\+\).*', '\1', "")
-	" lets check if it's not already included in order not to duplicate
-	if index(self.lib_names, s:lib) != -1
+	" check if it's not already included or ignored in order not to prompt for the same lib
+	if index(self.lib_names, s:lib) != -1 || index(self.ignore_tags, s:lib) != -1
 		return
 	endif
 
@@ -330,6 +331,7 @@ function! s:Generator.parse(line)
 			if ! empty(s:answer)
 				call self.generate_tags(s:answer, s:lib_tag)
 			else
+				call add(self.ignore_tags, s:lib)
 				return
 			endif
 		endif

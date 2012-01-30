@@ -1,6 +1,6 @@
 This is a mirror of http://www.vim.org/scripts/script.php?script_id=3710
 
-EasyPeasy parses the source code for included system headers and Generates
+EasyPeasy parses C source code for included system headers and Generates
 an .lvimrc (or whatever you set g:lvimrc_filename) with 'tags' variable concatinations.
 I wrote it for the reason that having full system tags is totally unpleasant experience
 because of performance and existing garbage tags unused by the project. This script allows me
@@ -84,7 +84,6 @@ CHANGELOG:
 
 
 SHORT TEASER:
-http://www.megaupload.com/?d=33X4UJTT
+http://youtu.be/HjhwJkhuD0w
 OR SCREENSHOT:
 http://img607.imageshack.us/img607/4401/tutorn.png
-
